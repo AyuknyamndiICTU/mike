@@ -180,7 +180,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     } catch (Exception $e) {
         // Rollback transaction on error
-        $pdo->rollBack();
+        if ($pdo->inTransaction()) {
+            $pdo->rollBack();
+        }
         error_log("Booking Error: " . $e->getMessage());
         error_log("Stack trace: " . $e->getTraceAsString());
 
@@ -191,8 +193,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $error = "Missing ticket type information. Please try again.";
         } elseif (strpos($e->getMessage(), 'fill in all required') !== false) {
             $error = $e->getMessage();
+        } elseif (strpos($e->getMessage(), 'payment_status') !== false) {
+            $error = "Database column 'payment_status' not found. Please contact administrator.";
         } else {
-            $error = "An error occurred while processing your booking. Please try again.";
+            // Show the actual error message for debugging
+            $error = "Booking error: " . $e->getMessage();
         }
     }
 }
