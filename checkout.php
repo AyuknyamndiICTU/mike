@@ -89,54 +89,29 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         // Create booking record for each cart item
         foreach ($cart_items as $item) {
-            // Check if bookings table has attendee columns
-            $check_columns_sql = "SHOW COLUMNS FROM bookings LIKE 'attendee_name'";
-            $check_stmt = $pdo->prepare($check_columns_sql);
-            $check_stmt->execute();
-            $has_attendee_columns = $check_stmt->rowCount() > 0;
 
-            if ($has_attendee_columns) {
-                // Insert booking with attendee information
-                $booking_sql = "INSERT INTO bookings (user_id, event_id, quantity, total_amount,
-                                                    payment_status, booking_date, status,
-                                                    attendee_name, attendee_email, attendee_phone)
-                               VALUES (?, ?, ?, ?, ?, NOW(), ?, ?, ?, ?)";
+            // Based on the actual table structure: user_id, event_id, ticket_type_id, quantity, total_amount, status, payment_status
+            // Since attendee columns don't exist in this table, we'll store attendee info in session
+            $booking_sql = "INSERT INTO bookings (user_id, event_id, ticket_type_id, quantity, total_amount, status, payment_status)
+                           VALUES (?, ?, ?, ?, ?, ?, ?)";
 
-                $booking_stmt = $pdo->prepare($booking_sql);
-                $booking_stmt->execute([
-                    $_SESSION['user_id'],
-                    $item['event_id'],
-                    $item['quantity'],
-                    $item['subtotal'],
-                    'paid',
-                    'confirmed',
-                    $_POST['attendee_name'],
-                    $_POST['attendee_email'],
-                    $_POST['attendee_phone']
-                ]);
-            } else {
-                // Insert booking without attendee information (older schema)
-                $booking_sql = "INSERT INTO bookings (user_id, event_id, quantity, total_amount,
-                                                    payment_status, booking_date, status)
-                               VALUES (?, ?, ?, ?, ?, NOW(), ?)";
+            $booking_stmt = $pdo->prepare($booking_sql);
+            $booking_stmt->execute([
+                $_SESSION['user_id'],
+                $item['event_id'],
+                null, // ticket_type_id can be null
+                $item['quantity'],
+                $item['subtotal'],
+                'confirmed',
+                'completed'
+            ]);
 
-                $booking_stmt = $pdo->prepare($booking_sql);
-                $booking_stmt->execute([
-                    $_SESSION['user_id'],
-                    $item['event_id'],
-                    $item['quantity'],
-                    $item['subtotal'],
-                    'paid',
-                    'confirmed'
-                ]);
-
-                // Store attendee information in session for confirmation page
-                $_SESSION['last_booking_attendee'] = [
-                    'name' => $_POST['attendee_name'],
-                    'email' => $_POST['attendee_email'],
-                    'phone' => $_POST['attendee_phone']
-                ];
-            }
+            // Store attendee information in session for confirmation page
+            $_SESSION['last_booking_attendee'] = [
+                'name' => $_POST['attendee_name'],
+                'email' => $_POST['attendee_email'],
+                'phone' => $_POST['attendee_phone']
+            ];
 
             // Update event available seats (check column name first)
             $check_seats_sql = "SHOW COLUMNS FROM events LIKE 'available_seats'";
