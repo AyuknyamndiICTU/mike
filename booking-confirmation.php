@@ -8,13 +8,41 @@ requireLogin();
 
 // Get latest booking
 try {
-    $sql = "SELECT b.*, e.title, e.event_date, e.event_time, e.venue, e.price 
-            FROM bookings b 
-            JOIN events e ON b.event_id = e.id 
-            WHERE b.user_id = ? 
-            ORDER BY b.booking_date DESC 
+    // Check what columns exist in events table
+    $check_columns_sql = "SHOW COLUMNS FROM events";
+    $check_stmt = $pdo->prepare($check_columns_sql);
+    $check_stmt->execute();
+    $columns = $check_stmt->fetchAll(PDO::FETCH_COLUMN);
+
+    // Build the SELECT query based on available columns
+    $event_columns = ['e.title', 'e.price'];
+
+    // Check for date/time columns
+    if (in_array('event_date', $columns)) {
+        $event_columns[] = 'e.event_date';
+    } elseif (in_array('date', $columns)) {
+        $event_columns[] = 'e.date as event_date';
+    }
+
+    if (in_array('event_time', $columns)) {
+        $event_columns[] = 'e.event_time';
+    } elseif (in_array('time', $columns)) {
+        $event_columns[] = 'e.time as event_time';
+    }
+
+    if (in_array('venue', $columns)) {
+        $event_columns[] = 'e.venue';
+    } elseif (in_array('location', $columns)) {
+        $event_columns[] = 'e.location as venue';
+    }
+
+    $sql = "SELECT b.*, " . implode(', ', $event_columns) . "
+            FROM bookings b
+            JOIN events e ON b.event_id = e.id
+            WHERE b.user_id = ?
+            ORDER BY b.booking_date DESC
             LIMIT 1";
-    
+
     $stmt = $pdo->prepare($sql);
     $stmt->execute([$_SESSION['user_id']]);
     $booking = $stmt->fetch();
@@ -74,12 +102,18 @@ try {
                                     <h5>Event Details</h5>
                                     <p>
                                         <strong><?php echo htmlspecialchars($booking['title']); ?></strong><br>
-                                        <i class="bi bi-calendar"></i> 
+                                        <?php if (isset($booking['event_date']) && $booking['event_date']): ?>
+                                        <i class="bi bi-calendar"></i>
                                         <?php echo date('F d, Y', strtotime($booking['event_date'])); ?><br>
-                                        <i class="bi bi-clock"></i> 
+                                        <?php endif; ?>
+                                        <?php if (isset($booking['event_time']) && $booking['event_time']): ?>
+                                        <i class="bi bi-clock"></i>
                                         <?php echo date('g:i A', strtotime($booking['event_time'])); ?><br>
-                                        <i class="bi bi-geo-alt"></i> 
+                                        <?php endif; ?>
+                                        <?php if (isset($booking['venue']) && $booking['venue']): ?>
+                                        <i class="bi bi-geo-alt"></i>
                                         <?php echo htmlspecialchars($booking['venue']); ?>
+                                        <?php endif; ?>
                                     </p>
                                 </div>
                                 <div class="col-md-6">
@@ -105,17 +139,19 @@ try {
                                 </p>
                             </div>
 
+                            <?php if (isset($_SESSION['last_booking_attendee'])): ?>
                             <div class="attendee-info mb-4">
                                 <h5>Attendee Information</h5>
                                 <p>
-                                    <strong>Name:</strong> 
-                                    <?php echo htmlspecialchars($booking['attendee_name']); ?><br>
-                                    <strong>Email:</strong> 
-                                    <?php echo htmlspecialchars($booking['attendee_email']); ?><br>
-                                    <strong>Phone:</strong> 
-                                    <?php echo htmlspecialchars($booking['attendee_phone']); ?>
+                                    <strong>Name:</strong>
+                                    <?php echo htmlspecialchars($_SESSION['last_booking_attendee']['name']); ?><br>
+                                    <strong>Email:</strong>
+                                    <?php echo htmlspecialchars($_SESSION['last_booking_attendee']['email']); ?><br>
+                                    <strong>Phone:</strong>
+                                    <?php echo htmlspecialchars($_SESSION['last_booking_attendee']['phone']); ?>
                                 </p>
                             </div>
+                            <?php endif; ?>
 
                             <div class="text-center">
                                 <a href="download-ticket.php?id=<?php echo $booking['id']; ?>" 
