@@ -1,0 +1,37 @@
+    INFO: 2025-06-01 07:20:04,774:               log.py:   20: Logging to C:\xampp\htdocs\mike\mdpdf.log
+   DEBUG: 2025-06-01 07:20:04,776:               cli.py:  103: documentation.md
+    INFO: 2025-06-01 07:20:04,780:         converter.py:   14: documentation.md
+   DEBUG: 2025-06-01 07:20:04,817:      pdf_renderer.py:  470: printSegment: Event Booking System Documentation
+   DEBUG: 2025-06-01 07:20:04,832:      pdf_renderer.py:  470: printSegment: <div style="page-break-after: always;"></div>
+   DEBUG: 2025-06-01 07:20:04,851:      pdf_renderer.py:  470: printSegment: Table of Contents
+   DEBUG: 2025-06-01 07:20:04,865:      pdf_renderer.py:  470: printSegment:  1 
+   DEBUG: 2025-06-01 07:20:04,880:      pdf_renderer.py:  470: printSegment: Introduction
+   ERROR: 2025-06-01 07:20:04,885:      pdf_renderer.py:  217: C:\xampp\htdocs\mike\documentation.md:6: #introduction: No such file or directory
+   DEBUG: 2025-06-01 07:20:04,885:      pdf_renderer.py:  470: printSegment:  2 
+   DEBUG: 2025-06-01 07:20:04,892:      pdf_renderer.py:  470: printSegment: System Analysis 
+   DEBUG: 2025-06-01 07:20:04,896:      pdf_renderer.py:  470: printSegment: &
+   DEBUG: 2025-06-01 07:20:04,899:      pdf_renderer.py:  470: printSegment:  Design
+   ERROR: 2025-06-01 07:20:04,901:      pdf_renderer.py:  217: C:\xampp\htdocs\mike\documentation.md:7: #system-analysis--design: No such file or directory
+   DEBUG: 2025-06-01 07:20:04,903:      pdf_renderer.py:  470: printSegment:  3 
+   DEBUG: 2025-06-01 07:20:04,914:      pdf_renderer.py:  470: printSegment: Getting Started
+   ERROR: 2025-06-01 07:20:04,916:      pdf_renderer.py:  217: C:\xampp\htdocs\mike\documentation.md:8: #getting-started: No such file or directory
+   DEBUG: 2025-06-01 07:20:04,917:      pdf_renderer.py:  470: printSegment:  4 
+   DEBUG: 2025-06-01 07:20:04,933:      pdf_renderer.py:  470: printSegment: User Guide
+   ERROR: 2025-06-01 07:20:04,939:      pdf_renderer.py:  217: C:\xampp\htdocs\mike\documentation.md:9: #user-guide: No such file or directory
+   DEBUG: 2025-06-01 07:20:04,945:      pdf_renderer.py:  470: printSegment:  5 
+   DEBUG: 2025-06-01 07:20:04,949:      pdf_renderer.py:  470: printSegment: Administrator Guide
+   ERROR: 2025-06-01 07:20:04,950:      pdf_renderer.py:  217: C:\xampp\htdocs\mike\documentation.md:10: #administrator-guide: No such file or directory
+   DEBUG: 2025-06-01 07:20:04,951:      pdf_renderer.py:  470: printSegment:  6 
+   DEBUG: 2025-06-01 07:20:04,960:      pdf_renderer.py:  470: printSegment: Technical Documentation
+   ERROR: 2025-06-01 07:20:04,965:      pdf_renderer.py:  217: C:\xampp\htdocs\mike\documentation.md:11: #technical-documentation: No such file or directory
+   DEBUG: 2025-06-01 07:20:04,968:      pdf_renderer.py:  470: printSegment:  7 
+   DEBUG: 2025-06-01 07:20:04,975:      pdf_renderer.py:  470: printSegment: Security 
+   DEBUG: 2025-06-01 07:20:04,980:      pdf_renderer.py:  470: printSegment: &
+   DEBUG: 2025-06-01 07:20:04,982:      pdf_renderer.py:  470: printSegment:  Maintenance
+   ERROR: 2025-06-01 07:20:04,985:      pdf_renderer.py:  217: C:\xampp\htdocs\mike\documentation.md:12: #security-maintenance: No such file or directory
+   DEBUG: 2025-06-01 07:20:04,991:      pdf_renderer.py:  470: printSegment: <div style="page-break-after: always;"></div>
+   DEBUG: 2025-06-01 07:20:04,997:      pdf_renderer.py:  470: printSegment: Introduction
+   DEBUG: 2025-06-01 07:20:05,000:      pdf_renderer.py:  470: printSegment: About the System
+   DEBUG: 2025-06-01 07:20:05,048:      pdf_renderer.py:  470: printSegment: The Event Booking System is a comprehensive web application designed to streamline the process of event
+   DEBUG: 2025-06-01 07:20:05,053:      pdf_renderer.py:  470: printSegment: management and ticket booking. This platform connects event organizers with attendees through an intuitive and
+   DEBUG: 2025-06-01 07:20:05,058:      pdf_renderer.py:  470: printSegment: secure interface.
