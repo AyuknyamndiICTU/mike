@@ -66,11 +66,43 @@ try {
     to { background-position: 1000px 0; }
 }
 
+@keyframes gradientShift {
+    0%, 100% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+}
+
+@keyframes headerShine {
+    0% { transform: translateX(-100%) rotate(45deg); }
+    100% { transform: translateX(100%) rotate(45deg); }
+}
+
 .hero-section h1 {
     font-size: 3.5rem;
     font-weight: 700;
     margin-bottom: 20px;
     animation: fadeInDown 1s ease;
+    background: linear-gradient(135deg, var(--success-color) 0%, var(--accent-color) 50%, var(--primary-color) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    background-size: 200% 100%;
+    animation: fadeInDown 1s ease, gradientShift 4s ease-in-out infinite 1s;
+    position: relative;
+    display: inline-block;
+    overflow: hidden;
+}
+
+.hero-section h1::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    right: -50%;
+    width: 100%;
+    height: 200%;
+    background: linear-gradient(45deg, transparent, rgba(255,255,255,0.15), transparent);
+    transform: rotate(45deg);
+    animation: headerShine 4s infinite 1s;
+    pointer-events: none;
 }
 
 .hero-section p {
@@ -98,6 +130,15 @@ try {
     margin-bottom: 40px;
     position: relative;
     padding-bottom: 15px;
+    background: linear-gradient(135deg, var(--success-color) 0%, var(--accent-color) 50%, var(--primary-color) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    background-size: 200% 100%;
+    animation: gradientShift 4s ease-in-out infinite;
+    display: inline-block;
+    width: 100%;
+    overflow: hidden;
 }
 
 .featured-events h2::after {
