@@ -71,4 +71,4 @@ try {
     error_log("Ticket Download Error: " . $e->getMessage());
     die("An error occurred while generating your ticket.");
 }
-?> 
+?>

@@ -133,7 +133,7 @@ Three-Tier Architecture:
     ├── PDO abstraction layer
     └── Prepared statements
 
-```text
+```
 
 ### **Security Documentation**
 
@@ -263,11 +263,11 @@ Three-Tier Architecture:
 
 This documentation package represents a **complete, professional-grade documentation suite** that covers:
 
-✅ **Every aspect of the system** from architecture to user workflows
-✅ **Multiple learning styles** with text, visuals, and interactive elements
-✅ **Professional presentation** suitable for stakeholders and technical teams
-✅ **Practical implementation** with real code examples and deployment guides
-✅ **Future-proof design** that can evolve with the system
+✅ **Every aspect of the system** from architecture to user workflows  
+✅ **Multiple learning styles** with text, visuals, and interactive elements  
+✅ **Professional presentation** suitable for stakeholders and technical teams  
+✅ **Practical implementation** with real code examples and deployment guides  
+✅ **Future-proof design** that can evolve with the system  
 
 The Event Booking System now has **enterprise-level documentation** that serves developers, administrators, end-users, and project stakeholders with comprehensive, accurate, and professionally presented information.
 

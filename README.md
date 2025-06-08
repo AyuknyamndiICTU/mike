@@ -55,14 +55,14 @@ A comprehensive web-based event booking platform that allows users to browse, se
 - Frontend: HTML5, CSS3, Bootstrap 5, JavaScript
 - Backend: PHP
 - Database: MySQL
-- Additional Libraries: 
+- Additional Libraries:
   - jQuery for AJAX requests
   - Leaflet.js for maps
   - QRCode.js for QR code generation
 
 ## Directory Structure
 
-```
+```text
 event-booking/
 ├── admin/             # Admin panel files
 ├── assets/           # Static assets (CSS, JS, images)
@@ -87,4 +87,4 @@ event-booking/
 
 ## License
 
-MIT License 
+MIT License
