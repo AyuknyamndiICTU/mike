@@ -58,7 +58,7 @@ $flash = getFlashMessage();
         <div class="col-md-6">
             <div class="card shadow">
                 <div class="card-body">
-                    <h2 class="text-center mb-4">Register</h2>
+                    <h2 class="text-center mb-4 animated-gradient-header">Register</h2>
                     
                     <?php if (isset($error)): ?>
                         <div class="alert alert-danger"><?php echo $error; ?></div>
