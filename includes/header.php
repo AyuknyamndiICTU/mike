@@ -24,6 +24,8 @@ header("Permissions-Policy: geolocation=(), microphone=(), camera=()");
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <!-- Bootstrap Icons -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet">
+    <!-- Font Awesome Icons -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <!-- Animation CSS -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
     <!-- Custom CSS -->
@@ -35,6 +37,10 @@ header("Permissions-Policy: geolocation=(), microphone=(), camera=()");
             --info-color: #36b9cc;
             --warning-color: #f6c23e;
             --danger-color: #e74a3b;
+            --accent-color: #06b6d4;
+            --primary-color-rgb: 78, 115, 223;
+            --success-color-rgb: 28, 200, 138;
+            --accent-color-rgb: 6, 182, 212;
         }
 
         body {
@@ -48,12 +54,32 @@ header("Permissions-Policy: geolocation=(), microphone=(), camera=()");
 
         .navbar-brand {
             font-weight: bold;
-            color: white !important;
+            background: linear-gradient(135deg, var(--success-color) 0%, var(--accent-color) 50%, var(--primary-color) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            background-size: 200% 100%;
+            animation: gradientShift 4s ease-in-out infinite;
             transition: all 0.3s ease;
+            position: relative;
         }
 
         .navbar-brand:hover {
             transform: translateY(-2px);
+            animation-duration: 2s;
+        }
+
+        .navbar-brand::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -50%;
+            width: 100%;
+            height: 200%;
+            background: linear-gradient(45deg, transparent, rgba(255,255,255,0.15), transparent);
+            transform: rotate(45deg);
+            animation: headerShine 4s infinite;
+            pointer-events: none;
         }
 
         .nav-link {
@@ -166,6 +192,41 @@ header("Permissions-Policy: geolocation=(), microphone=(), camera=()");
         @keyframes spin {
             0% { transform: rotate(0deg); }
             100% { transform: rotate(360deg); }
+        }
+
+        /* Animated Gradient Header Class */
+        .animated-gradient-header {
+            background: linear-gradient(135deg, var(--success-color) 0%, var(--accent-color) 50%, var(--primary-color) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            background-size: 200% 100%;
+            animation: gradientShift 4s ease-in-out infinite;
+            position: relative;
+            display: inline-block;
+        }
+
+        .animated-gradient-header::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -50%;
+            width: 100%;
+            height: 200%;
+            background: linear-gradient(45deg, transparent, rgba(255,255,255,0.15), transparent);
+            transform: rotate(45deg);
+            animation: headerShine 4s infinite;
+            pointer-events: none;
+        }
+
+        @keyframes gradientShift {
+            0%, 100% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+        }
+
+        @keyframes headerShine {
+            0% { transform: translateX(-100%) rotate(45deg); }
+            100% { transform: translateX(100%) rotate(45deg); }
         }
 
         /* Scrollbar */
