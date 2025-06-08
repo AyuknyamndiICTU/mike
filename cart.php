@@ -241,7 +241,7 @@ if (isset($_POST['update_quantity']) && isset($_POST['cart_id']) && isset($_POST
 <div class="container">
     <div class="cart-container">
         <div class="cart-header">
-            <h1 class="mb-0">Shopping Cart</h1>
+            <h1 class="mb-0 animated-gradient-header">Shopping Cart</h1>
         </div>
 
         <?php if (empty($cart_items)): ?>
