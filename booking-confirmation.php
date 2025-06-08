@@ -87,84 +87,143 @@ try {
 
 <div class="container mt-4">
     <div class="row justify-content-center">
-        <div class="col-md-8">
-            <div class="card">
-                <div class="card-body text-center">
-                    <i class="bi bi-check-circle text-success" style="font-size: 4rem;"></i>
-                    <h2 class="mt-3 mb-4">Booking Confirmed!</h2>
+        <div class="col-md-10">
+            <div class="confirmation-card">
+                <div class="confirmation-header">
+                    <div class="success-animation">
+                        <div class="checkmark-circle">
+                            <div class="checkmark"></div>
+                        </div>
+                    </div>
+                    <h1 class="confirmation-title">Booking Confirmed!</h1>
+                    <p class="confirmation-subtitle">Your tickets have been successfully booked</p>
+                </div>
                     
-                    <?php if (isset($error)): ?>
-                        <div class="alert alert-danger"><?php echo $error; ?></div>
-                    <?php else: ?>
-                        <div class="booking-details text-start">
-                            <div class="row mb-4">
-                                <div class="col-md-6">
-                                    <h5>Event Details</h5>
-                                    <p>
-                                        <strong><?php echo htmlspecialchars($booking['title']); ?></strong><br>
+                <?php if (isset($error)): ?>
+                    <div class="alert alert-danger animate-error"><?php echo $error; ?></div>
+                <?php else: ?>
+                    <div class="confirmation-content">
+                        <div class="row g-4 mb-5">
+                            <div class="col-md-6">
+                                <div class="info-card event-card animate-slide-left">
+                                    <div class="card-icon">
+                                        <i class="fas fa-calendar-alt"></i>
+                                    </div>
+                                    <h5 class="card-title">Event Details</h5>
+                                    <div class="card-content">
+                                        <h6 class="event-title"><?php echo htmlspecialchars($booking['title']); ?></h6>
                                         <?php if (isset($booking['event_date']) && $booking['event_date']): ?>
-                                        <i class="bi bi-calendar"></i>
-                                        <?php echo date('F d, Y', strtotime($booking['event_date'])); ?><br>
+                                        <div class="detail-item">
+                                            <i class="fas fa-calendar"></i>
+                                            <span><?php echo date('F d, Y', strtotime($booking['event_date'])); ?></span>
+                                        </div>
                                         <?php endif; ?>
                                         <?php if (isset($booking['event_time']) && $booking['event_time']): ?>
-                                        <i class="bi bi-clock"></i>
-                                        <?php echo date('g:i A', strtotime($booking['event_time'])); ?><br>
+                                        <div class="detail-item">
+                                            <i class="fas fa-clock"></i>
+                                            <span><?php echo date('g:i A', strtotime($booking['event_time'])); ?></span>
+                                        </div>
                                         <?php endif; ?>
                                         <?php if (isset($booking['venue']) && $booking['venue']): ?>
-                                        <i class="bi bi-geo-alt"></i>
-                                        <?php echo htmlspecialchars($booking['venue']); ?>
+                                        <div class="detail-item">
+                                            <i class="fas fa-map-marker-alt"></i>
+                                            <span><?php echo htmlspecialchars($booking['venue']); ?></span>
+                                        </div>
                                         <?php endif; ?>
-                                    </p>
-                                </div>
-                                <div class="col-md-6">
-                                    <h5>Booking Information</h5>
-                                    <p>
-                                        <strong>Booking ID:</strong> #<?php echo $booking['id']; ?><br>
-                                        <strong>Quantity:</strong> <?php echo $booking['quantity']; ?> ticket(s)<br>
-                                        <strong>Total Amount:</strong> 
-                                        <?php echo number_format($booking['total_amount'], 0); ?> FCFA<br>
-                                        <strong>Status:</strong> 
-                                        <span class="badge bg-success">Confirmed</span>
-                                    </p>
+                                    </div>
                                 </div>
                             </div>
-
-                            <div class="text-center mb-4">
-                                <h5>Your Booking Reference</h5>
-                                <div class="alert alert-info">
-                                    <?php echo $booking['qr_code']; ?>
+                            <div class="col-md-6">
+                                <div class="info-card booking-card animate-slide-right">
+                                    <div class="card-icon">
+                                        <i class="fas fa-ticket-alt"></i>
+                                    </div>
+                                    <h5 class="card-title">Booking Information</h5>
+                                    <div class="card-content">
+                                        <div class="detail-item">
+                                            <i class="fas fa-hashtag"></i>
+                                            <span><strong>Booking ID:</strong> #<?php echo $booking['id']; ?></span>
+                                        </div>
+                                        <div class="detail-item">
+                                            <i class="fas fa-users"></i>
+                                            <span><strong>Quantity:</strong> <?php echo $booking['quantity']; ?> ticket(s)</span>
+                                        </div>
+                                        <div class="detail-item">
+                                            <i class="fas fa-money-bill-wave"></i>
+                                            <span><strong>Total Amount:</strong> <?php echo number_format($booking['total_amount'], 0); ?> FCFA</span>
+                                        </div>
+                                        <div class="detail-item">
+                                            <i class="fas fa-check-circle"></i>
+                                            <span><strong>Status:</strong> <span class="status-badge confirmed">Confirmed</span></span>
+                                        </div>
+                                    </div>
                                 </div>
-                                <p class="text-muted mt-2">
+                            </div>
+                        </div>
+
+                        <div class="qr-section animate-fade-up">
+                            <div class="qr-card">
+                                <div class="qr-header">
+                                    <i class="fas fa-qrcode"></i>
+                                    <h5>Your Booking Reference</h5>
+                                </div>
+                                <div class="qr-code-container">
+                                    <div class="qr-code-display">
+                                        <i class="fas fa-qrcode qr-icon"></i>
+                                        <div class="qr-code-text"><?php echo $booking['qr_code']; ?></div>
+                                    </div>
+                                </div>
+                                <p class="qr-instruction">
+                                    <i class="fas fa-info-circle"></i>
                                     Show this reference code at the venue for entry
                                 </p>
                             </div>
+                        </div>
 
-                            <?php if (isset($_SESSION['last_booking_attendee'])): ?>
-                            <div class="attendee-info mb-4">
-                                <h5>Attendee Information</h5>
-                                <p>
-                                    <strong>Name:</strong>
-                                    <?php echo htmlspecialchars($_SESSION['last_booking_attendee']['name']); ?><br>
-                                    <strong>Email:</strong>
-                                    <?php echo htmlspecialchars($_SESSION['last_booking_attendee']['email']); ?><br>
-                                    <strong>Phone:</strong>
-                                    <?php echo htmlspecialchars($_SESSION['last_booking_attendee']['phone']); ?>
-                                </p>
+                        <?php if (isset($_SESSION['last_booking_attendee'])): ?>
+                        <div class="attendee-section animate-fade-up" style="animation-delay: 0.3s;">
+                            <div class="info-card attendee-card">
+                                <div class="card-icon">
+                                    <i class="fas fa-user"></i>
+                                </div>
+                                <h5 class="card-title">Attendee Information</h5>
+                                <div class="card-content">
+                                    <div class="detail-item">
+                                        <i class="fas fa-user-circle"></i>
+                                        <span><strong>Name:</strong> <?php echo htmlspecialchars($_SESSION['last_booking_attendee']['name']); ?></span>
+                                    </div>
+                                    <div class="detail-item">
+                                        <i class="fas fa-envelope"></i>
+                                        <span><strong>Email:</strong> <?php echo htmlspecialchars($_SESSION['last_booking_attendee']['email']); ?></span>
+                                    </div>
+                                    <div class="detail-item">
+                                        <i class="fas fa-phone"></i>
+                                        <span><strong>Phone:</strong> <?php echo htmlspecialchars($_SESSION['last_booking_attendee']['phone']); ?></span>
+                                    </div>
+                                </div>
                             </div>
-                            <?php endif; ?>
+                        </div>
+                        <?php endif; ?>
 
-                            <div class="text-center">
-                                <a href="download-ticket.php?id=<?php echo $booking['id']; ?>" 
-                                   class="btn btn-primary me-2">
-                                    <i class="bi bi-download"></i> Download Ticket
+                        <div class="action-buttons animate-fade-up" style="animation-delay: 0.6s;">
+                            <div class="button-group">
+                                <a href="download-ticket.php?id=<?php echo $booking['id']; ?>"
+                                   class="btn btn-primary btn-action">
+                                    <i class="fas fa-download"></i>
+                                    <span>Download Ticket</span>
                                 </a>
-                                <a href="bookings.php" class="btn btn-outline-primary">
-                                    <i class="bi bi-list"></i> View All Bookings
+                                <a href="bookings.php" class="btn btn-secondary btn-action">
+                                    <i class="fas fa-list"></i>
+                                    <span>View All Bookings</span>
+                                </a>
+                                <a href="events.php" class="btn btn-outline btn-action">
+                                    <i class="fas fa-calendar-plus"></i>
+                                    <span>Book More Events</span>
                                 </a>
                             </div>
                         </div>
-                    <?php endif; ?>
-                </div>
+                    </div>
+                <?php endif; ?>
             </div>
         </div>
     </div>
