@@ -90,20 +90,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         // Create booking record for each cart item
         foreach ($cart_items as $item) {
 
-            // Based on the actual table structure: user_id, event_id, ticket_type_id, quantity, total_amount, status, payment_status
-            // Since attendee columns don't exist in this table, we'll store attendee info in session
-            $booking_sql = "INSERT INTO bookings (user_id, event_id, ticket_type_id, quantity, total_amount, status, payment_status)
-                           VALUES (?, ?, ?, ?, ?, ?, ?)";
+            // Based on the actual table structure: user_id, event_id, quantity, total_amount, status
+            $booking_sql = "INSERT INTO bookings (user_id, event_id, quantity, total_amount, status)
+                           VALUES (?, ?, ?, ?, ?)";
 
             $booking_stmt = $pdo->prepare($booking_sql);
             $booking_stmt->execute([
                 $_SESSION['user_id'],
                 $item['event_id'],
-                null, // ticket_type_id can be null
                 $item['quantity'],
                 $item['subtotal'],
-                'confirmed',
-                'completed'
+                'confirmed'
             ]);
 
             // Store attendee information in session for confirmation page
