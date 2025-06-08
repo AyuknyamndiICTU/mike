@@ -1,5 +1,5 @@
 <?php
-require_once '../config/database.php';
+require_once __DIR__ . '/../config/database.php';
 
 try {
     // Create users table with proper structure
@@ -17,8 +17,8 @@ try {
         id INT PRIMARY KEY AUTO_INCREMENT,
         title VARCHAR(255) NOT NULL,
         description TEXT,
-        date DATE NOT NULL,
-        time TIME NOT NULL,
+        event_date DATE NOT NULL,
+        event_time TIME NOT NULL,
         venue VARCHAR(255) NOT NULL,
         price DECIMAL(10,2) NOT NULL,
         capacity INT NOT NULL,
