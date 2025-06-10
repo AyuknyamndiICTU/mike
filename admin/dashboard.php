@@ -194,7 +194,7 @@ try {
             <div class="col-md-3">
                 <a href="reports.php" class="quick-action-btn d-block text-decoration-none animate__animated animate__fadeIn">
                     <i class="bi bi-graph-up quick-action-icon"></i>
-                    <h5 class="mb-0">Analytics</h5>
+                    <h5 class="mb-0">Analytics & Reports</h5>
                 </a>
             </div>
         </div>
