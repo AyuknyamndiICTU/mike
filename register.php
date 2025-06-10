@@ -11,41 +11,69 @@ if (isLoggedIn()) {
 }
 
 if (isset($_POST['register'])) {
-    $username = sanitize($_POST['username']);
-    $email = sanitize($_POST['email']);
-    $password = password_hash($_POST['password'], PASSWORD_DEFAULT);
-    $full_name = sanitize($_POST['full_name']);
-    $phone = sanitize($_POST['phone']);
-    
-    try {
-        // Check if email already exists
-        $stmt = $pdo->prepare("SELECT id FROM users WHERE email = ?");
-        $stmt->execute([$email]);
-        
-        // Check if username already exists
-        $stmt2 = $pdo->prepare("SELECT id FROM users WHERE username = ?");
-        $stmt2->execute([$username]);
-        
-        if ($stmt->rowCount() > 0) {
-            $error = "Email already exists";
-        } elseif ($stmt2->rowCount() > 0) {
-            $error = "Username already exists";
-        } else {
-            // Insert new user
-            $sql = "INSERT INTO users (username, email, password, full_name, phone) VALUES (?, ?, ?, ?, ?)";
-            $stmt = $pdo->prepare($sql);
-            
-            if ($stmt->execute([$username, $email, $password, $full_name, $phone])) {
-                setFlashMessage('success', 'Registration successful! Please login.');
-                header("Location: login.php");
-                exit();
+    // Debug: Log registration attempt
+    error_log("Registration attempt received");
+    error_log("POST data: " . print_r($_POST, true));
+
+    $username = trim($_POST['username'] ?? '');
+    $email = trim($_POST['email'] ?? '');
+    $password = $_POST['password'] ?? '';
+    $full_name = trim($_POST['full_name'] ?? '');
+    $phone = trim($_POST['phone'] ?? '');
+
+    if (empty($username) || empty($email) || empty($password) || empty($full_name)) {
+        $error = "Please fill in all required fields.";
+        error_log("Registration failed: Missing required fields");
+    } elseif (strlen($password) < 6) {
+        $error = "Password must be at least 6 characters long.";
+        error_log("Registration failed: Password too short");
+    } elseif (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+        $error = "Please enter a valid email address.";
+        error_log("Registration failed: Invalid email format");
+    } else {
+        $password_hash = password_hash($password, PASSWORD_DEFAULT);
+
+        try {
+            // Check if email already exists
+            $stmt = $pdo->prepare("SELECT id FROM users WHERE email = ?");
+            $stmt->execute([$email]);
+
+            // Check if username already exists
+            $stmt2 = $pdo->prepare("SELECT id FROM users WHERE username = ?");
+            $stmt2->execute([$username]);
+
+            if ($stmt->rowCount() > 0) {
+                $error = "Email already exists. Please use a different email.";
+                error_log("Registration failed: Email already exists");
+            } elseif ($stmt2->rowCount() > 0) {
+                $error = "Username already exists. Please choose a different username.";
+                error_log("Registration failed: Username already exists");
             } else {
-                $error = "Registration failed. Please try again.";
+                // Insert new user
+                $sql = "INSERT INTO users (username, email, password, full_name, phone) VALUES (?, ?, ?, ?, ?)";
+                $stmt = $pdo->prepare($sql);
+
+                if ($stmt->execute([$username, $email, $password_hash, $full_name, $phone])) {
+                    error_log("Successful registration for user: " . $username);
+                    error_log("Redirecting to login.php");
+
+                    // Clear any output buffer
+                    if (ob_get_level()) {
+                        ob_end_clean();
+                    }
+
+                    // Simple redirect
+                    header("Location: login.php");
+                    exit();
+                } else {
+                    $error = "Registration failed. Please try again.";
+                    error_log("Registration failed: Database insert failed");
+                }
             }
+        } catch (PDOException $e) {
+            error_log("Registration Error: " . $e->getMessage());
+            $error = "An error occurred during registration. Please try again.";
         }
-    } catch (PDOException $e) {
-        error_log("Registration Error: " . $e->getMessage());
-        $error = "An error occurred during registration. Please try again.";
     }
 }
 
@@ -767,43 +795,58 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
 
-    // Field validation function
+    // Field validation function (for visual feedback only, not blocking submission)
     function validateField(field) {
         const feedback = field.parentElement.querySelector('.form-feedback');
+        if (!feedback) return true; // If no feedback element, don't validate
+
         let isValid = true;
         let message = '';
 
-        if (field.hasAttribute('required') && field.value.trim() === '') {
-            isValid = false;
-            message = 'This field is required';
-        } else if (field.type === 'email') {
-            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-            if (!emailRegex.test(field.value)) {
+        // Only validate if field has content or is required and empty
+        if (field.value.trim() === '') {
+            if (field.hasAttribute('required')) {
                 isValid = false;
-                message = 'Please enter a valid email address';
+                message = 'This field is required';
+            } else {
+                // Optional field, clear validation
+                field.classList.remove('is-valid', 'is-invalid');
+                feedback.textContent = '';
+                feedback.className = 'form-feedback';
+                return true;
             }
-        } else if (field.id === 'username') {
-            if (field.value.length < 3) {
-                isValid = false;
-                message = 'Username must be at least 3 characters';
-            } else if (!/^[a-zA-Z0-9_]+$/.test(field.value)) {
-                isValid = false;
-                message = 'Username can only contain letters, numbers, and underscores';
-            }
-        } else if (field.id === 'password') {
-            if (field.value.length < 6) {
-                isValid = false;
-                message = 'Password must be at least 6 characters';
-            }
-        } else if (field.id === 'phone' && field.value.trim() !== '') {
-            const phoneRegex = /^[\+]?[1-9][\d]{0,15}$/;
-            if (!phoneRegex.test(field.value.replace(/[\s\-\(\)]/g, ''))) {
-                isValid = false;
-                message = 'Please enter a valid phone number';
+        } else {
+            // Field has content, validate format
+            if (field.type === 'email') {
+                const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                if (!emailRegex.test(field.value)) {
+                    isValid = false;
+                    message = 'Please enter a valid email address';
+                }
+            } else if (field.id === 'username') {
+                if (field.value.length < 3) {
+                    isValid = false;
+                    message = 'Username must be at least 3 characters';
+                } else if (!/^[a-zA-Z0-9_]+$/.test(field.value)) {
+                    isValid = false;
+                    message = 'Username can only contain letters, numbers, and underscores';
+                }
+            } else if (field.id === 'password') {
+                if (field.value.length < 6) {
+                    isValid = false;
+                    message = 'Password must be at least 6 characters';
+                }
+            } else if (field.id === 'phone' && field.value.trim() !== '') {
+                // More flexible phone validation
+                const phoneRegex = /^[\+]?[\d\s\-\(\)]{7,}$/;
+                if (!phoneRegex.test(field.value)) {
+                    isValid = false;
+                    message = 'Please enter a valid phone number';
+                }
             }
         }
 
-        // Update field appearance
+        // Update field appearance (visual feedback only)
         if (isValid && field.value.trim() !== '') {
             field.classList.add('is-valid');
             field.classList.remove('is-invalid');
@@ -856,45 +899,39 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
 
-    // Enhanced form submission with loading animation
+    // Simple form submission with loading animation (no interference)
     form.addEventListener('submit', function(e) {
-        // Validate all fields
-        let allValid = true;
-        inputs.forEach(input => {
-            if (!validateField(input)) {
-                allValid = false;
-            }
-        });
+        const submitBtn = this.querySelector('.btn-register');
 
-        // Check terms checkbox
+        // Check terms checkbox only
         const termsCheckbox = document.getElementById('terms');
         if (!termsCheckbox.checked) {
-            allValid = false;
-            alert('Please accept the Terms of Service and Privacy Policy');
-            return false;
-        }
-
-        if (!allValid) {
             e.preventDefault();
+            alert('Please accept the Terms of Service and Privacy Policy');
+            termsCheckbox.focus();
             return false;
         }
 
-        const submitBtn = this.querySelector('.btn-register');
-        const originalText = submitBtn.innerHTML;
-
-        // Add loading state
-        submitBtn.innerHTML = '<i class="bi bi-arrow-clockwise me-2" style="animation: spin 1s linear infinite;"></i>Creating Account...';
-        submitBtn.disabled = true;
+        // Only add loading state, don't prevent submission
+        setTimeout(() => {
+            submitBtn.innerHTML = '<i class="bi bi-arrow-clockwise me-2" style="animation: spin 1s linear infinite;"></i>Creating Account...';
+            submitBtn.disabled = true;
+        }, 10);
 
         // Add CSS for spin animation
-        const style = document.createElement('style');
-        style.textContent = `
-            @keyframes spin {
-                0% { transform: rotate(0deg); }
-                100% { transform: rotate(360deg); }
-            }
-        `;
-        document.head.appendChild(style);
+        if (!document.getElementById('spin-animation-register')) {
+            const style = document.createElement('style');
+            style.id = 'spin-animation-register';
+            style.textContent = `
+                @keyframes spin {
+                    0% { transform: rotate(0deg); }
+                    100% { transform: rotate(360deg); }
+                }
+            `;
+            document.head.appendChild(style);
+        }
+
+        // Let the form submit naturally - no preventDefault() except for terms
     });
 
     // Add floating particles effect
