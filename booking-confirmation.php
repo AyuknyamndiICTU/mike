@@ -58,29 +58,52 @@ try {
 
     // Generate QR code if not already generated
     if (!$booking['qr_code']) {
-        // QR code data
+        // QR code data - comprehensive booking information
         $qr_data = json_encode([
             'booking_id' => $booking['id'],
             'event_id' => $booking['event_id'],
+            'event_title' => $booking['title'],
             'user_id' => $booking['user_id'],
             'quantity' => $booking['quantity'],
+            'total_amount' => $booking['total_amount'],
             'event_date' => $booking['event_date'],
-            'event_time' => $booking['event_time']
+            'event_time' => $booking['event_time'],
+            'venue' => $booking['venue'],
+            'status' => $booking['status'],
+            'verification_url' => (isset($_SERVER['HTTPS']) ? 'https' : 'http') . "://" . $_SERVER['HTTP_HOST'] . "/mike/verify-booking.php?id=" . $booking['id']
         ]);
 
         // Generate unique filename
         $qr_filename = 'qr_' . uniqid() . '.png';
         $qr_path = 'uploads/qrcodes/' . $qr_filename;
-        
-        // Create a simple text file with booking data
-        file_put_contents($qr_path, $qr_data);
 
-        // Update booking with QR code
-        $update_sql = "UPDATE bookings SET qr_code = ? WHERE id = ?";
-        $update_stmt = $pdo->prepare($update_sql);
-        $update_stmt->execute([$qr_filename, $booking['id']]);
-        
-        $booking['qr_code'] = $qr_filename;
+        // Create directory if it doesn't exist
+        if (!file_exists('uploads/qrcodes/')) {
+            mkdir('uploads/qrcodes/', 0755, true);
+        }
+
+        // Generate QR code using Google Charts API (free and reliable)
+        $qr_url = 'https://chart.googleapis.com/chart?chs=300x300&cht=qr&chl=' . urlencode($qr_data) . '&choe=UTF-8';
+
+        // Download and save the QR code image
+        $qr_image_data = file_get_contents($qr_url);
+        if ($qr_image_data !== false) {
+            file_put_contents($qr_path, $qr_image_data);
+
+            // Update booking with QR code
+            $update_sql = "UPDATE bookings SET qr_code = ? WHERE id = ?";
+            $update_stmt = $pdo->prepare($update_sql);
+            $update_stmt->execute([$qr_filename, $booking['id']]);
+
+            $booking['qr_code'] = $qr_filename;
+        } else {
+            // Fallback: create a simple QR code reference
+            $qr_reference = 'BOOK-' . str_pad($booking['id'], 6, '0', STR_PAD_LEFT) . '-' . date('Y', strtotime($booking['booking_date']));
+            $update_sql = "UPDATE bookings SET qr_code = ? WHERE id = ?";
+            $update_stmt = $pdo->prepare($update_sql);
+            $update_stmt->execute([$qr_reference, $booking['id']]);
+            $booking['qr_code'] = $qr_reference;
+        }
     }
 
 } catch (PDOException $e) {
@@ -178,12 +201,19 @@ try {
                                     </div>
                                     <div class="qr-content-compact">
                                         <div class="qr-code-display-compact">
-                                            <i class="fas fa-qrcode qr-icon-compact"></i>
-                                            <div class="qr-code-text-compact"><?php echo $booking['qr_code']; ?></div>
+                                            <?php if (file_exists('uploads/qrcodes/' . $booking['qr_code']) && pathinfo($booking['qr_code'], PATHINFO_EXTENSION) === 'png'): ?>
+                                                <img src="uploads/qrcodes/<?php echo $booking['qr_code']; ?>"
+                                                     alt="Booking QR Code"
+                                                     class="qr-code-image"
+                                                     style="max-width: 150px; height: auto; border-radius: 8px;">
+                                            <?php else: ?>
+                                                <i class="fas fa-qrcode qr-icon-compact"></i>
+                                                <div class="qr-code-text-compact"><?php echo $booking['qr_code']; ?></div>
+                                            <?php endif; ?>
                                         </div>
                                         <p class="qr-instruction-compact">
                                             <i class="fas fa-info-circle"></i>
-                                            Show at venue for entry
+                                            Scan QR code or show reference at venue for entry
                                         </p>
                                     </div>
                                 </div>
