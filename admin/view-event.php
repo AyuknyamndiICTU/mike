@@ -108,14 +108,14 @@ try {
         margin: 0;
         font-size: 2.5rem;
         font-weight: 700;
-        text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        color: white;
+        text-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
         animation: slideInFromLeft 1s ease-out;
-        background: linear-gradient(135deg, #fff 0%, #f0f8ff 50%, #e6f3ff 100%);
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
-        background-clip: text;
-        background-size: 200% 100%;
-        animation: gradientShift 4s ease-in-out infinite, slideInFromLeft 1s ease-out;
+    }
+
+    .page-header p {
+        color: rgba(255, 255, 255, 0.9);
+        text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
     }
 
     @keyframes slideInFromLeft {
@@ -264,14 +264,21 @@ try {
 
     .info-label {
         font-weight: 700;
-        background: var(--primary-gradient);
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
-        background-clip: text;
+        color: #2c3e50;
         margin-bottom: 0.5rem;
         text-transform: uppercase;
         letter-spacing: 0.5px;
         font-size: 0.9rem;
+        text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+    }
+
+    .badge {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
+        color: white !important;
+        text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+        padding: 0.5rem 1rem;
+        font-size: 0.875rem;
+        border-radius: 20px;
     }
 
     .map-container {
@@ -337,11 +344,12 @@ try {
     }
 
     .stats-label {
-        color: #333;
+        color: #2c3e50;
         font-size: 0.875rem;
         text-transform: uppercase;
         letter-spacing: 0.1em;
         font-weight: 600;
+        text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
     }
 
     /* Enhanced Delete Button */
