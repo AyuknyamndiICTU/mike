@@ -35,23 +35,130 @@ $page_title = htmlspecialchars($event['title']) . " - Event Booking System";
 <!-- Add SweetAlert2 -->
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
+<style>
+    /* Page Header Styles */
+    .page-header {
+        background: linear-gradient(135deg, var(--primary-color), #224abe);
+        padding: 2rem 0;
+        margin-bottom: 2rem;
+        color: white;
+        box-shadow: 0 0.15rem 1.75rem 0 rgba(58, 59, 69, 0.15);
+    }
+
+    .page-header .container {
+        position: relative;
+    }
+
+    .page-header h1 {
+        background: linear-gradient(135deg, var(--success-color) 0%, var(--accent-color) 50%, white 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        background-size: 200% 100%;
+        animation: gradientShift 4s ease-in-out infinite;
+        font-weight: 700;
+        position: relative;
+        display: inline-block;
+        overflow: hidden;
+        margin: 0;
+        font-size: 1.75rem;
+    }
+
+    .page-header h1::before {
+        content: '';
+        position: absolute;
+        top: -50%;
+        right: -50%;
+        width: 100%;
+        height: 200%;
+        background: linear-gradient(45deg, transparent, rgba(255,255,255,0.15), transparent);
+        transform: rotate(45deg);
+        animation: headerShine 4s infinite;
+        pointer-events: none;
+    }
+
+    .header-actions .btn {
+        padding: 0.5rem 1.25rem;
+        border-radius: 50rem;
+        font-weight: 500;
+        transition: all 0.3s ease;
+    }
+
+    .header-actions .btn:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    }
+
+    .btn-back {
+        background: rgba(255, 255, 255, 0.1);
+        color: white;
+        border: 1px solid rgba(255, 255, 255, 0.2);
+    }
+
+    .btn-back:hover {
+        background: rgba(255, 255, 255, 0.2);
+        color: white;
+        border-color: rgba(255, 255, 255, 0.3);
+    }
+
+    .breadcrumb-custom {
+        background: rgba(255, 255, 255, 0.1);
+        border-radius: 50rem;
+        padding: 0.5rem 1rem;
+        margin-top: 1rem;
+    }
+
+    .breadcrumb-custom .breadcrumb-item a {
+        color: rgba(255, 255, 255, 0.8);
+        text-decoration: none;
+    }
+
+    .breadcrumb-custom .breadcrumb-item a:hover {
+        color: white;
+    }
+
+    .breadcrumb-custom .breadcrumb-item.active {
+        color: white;
+    }
+
+    .breadcrumb-custom .breadcrumb-item + .breadcrumb-item::before {
+        color: rgba(255, 255, 255, 0.6);
+    }
+</style>
+
+<!-- Page Header -->
+<div class="page-header animate__animated animate__fadeIn">
+    <div class="container">
+        <div class="d-flex justify-content-between align-items-center">
+            <div>
+                <h1 class="animate__animated animate__fadeInLeft">Event Details</h1>
+                <nav aria-label="breadcrumb" class="breadcrumb-custom animate__animated animate__fadeInLeft" style="animation-delay: 0.2s">
+                    <ol class="breadcrumb mb-0">
+                        <li class="breadcrumb-item"><a href="index.php">Home</a></li>
+                        <li class="breadcrumb-item"><a href="events.php">Events</a></li>
+                        <li class="breadcrumb-item active" aria-current="page"><?php echo htmlspecialchars($event['title']); ?></li>
+                    </ol>
+                </nav>
+            </div>
+            <div class="header-actions animate__animated animate__fadeInRight">
+                <a href="events.php" class="btn btn-back">
+                    <i class="bi bi-arrow-left"></i> Back to Events
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
 <div class="container mt-4">
-    <nav aria-label="breadcrumb">
-        <ol class="breadcrumb">
-            <li class="breadcrumb-item"><a href="index.php">Home</a></li>
-            <li class="breadcrumb-item"><a href="events.php">Events</a></li>
-            <li class="breadcrumb-item active" aria-current="page"><?php echo htmlspecialchars($event['title']); ?></li>
-        </ol>
-    </nav>
 
     <div class="row">
         <!-- Event Image and Basic Info -->
         <div class="col-md-8">
-            <img src="<?php echo htmlspecialchars($event['image_url']); ?>" 
-                 alt="<?php echo htmlspecialchars($event['title']); ?>" 
-                 class="img-fluid rounded event-image">
-            
-            <div class="event-details p-4">
+            <img src="<?php echo htmlspecialchars($event['image_url']); ?>"
+                 alt="<?php echo htmlspecialchars($event['title']); ?>"
+                 class="img-fluid rounded event-image animate__animated animate__fadeIn">
+
+            <div class="event-details p-4 animate__animated animate__fadeInUp" style="animation-delay: 0.2s">
                 <h1><?php echo htmlspecialchars($event['title']); ?></h1>
                 
                 <div class="d-flex flex-wrap gap-4 text-muted mb-4">
@@ -76,7 +183,7 @@ $page_title = htmlspecialchars($event['title']) . " - Event Booking System";
                 <h4>About This Event</h4>
                 <p class="lead"><?php echo nl2br(htmlspecialchars($event['description'])); ?></p>
 
-                <div class="organizer-info card mb-4">
+                <div class="organizer-info card mb-4 animate__animated animate__fadeInLeft" style="animation-delay: 0.4s">
                     <div class="card-header bg-primary text-white">
                         <h5 class="mb-0">
                             <i class="bi bi-person-badge me-2"></i>Event Organizer
@@ -124,7 +231,7 @@ $page_title = htmlspecialchars($event['title']) . " - Event Booking System";
                 </div>
 
                 <!-- Venue Information -->
-                <div class="venue-info card mb-4">
+                <div class="venue-info card mb-4 animate__animated animate__fadeInRight" style="animation-delay: 0.6s">
                     <div class="card-header bg-success text-white">
                         <h5 class="mb-0">
                             <i class="bi bi-geo-alt me-2"></i>Venue Information
@@ -177,7 +284,7 @@ $page_title = htmlspecialchars($event['title']) . " - Event Booking System";
 
         <!-- Booking Section -->
         <div class="col-md-4">
-            <div class="card sticky-top" style="top: 20px;">
+            <div class="card sticky-top animate__animated animate__fadeInUp" style="top: 20px; animation-delay: 0.8s">
                 <div class="card-body">
                     <h3 class="card-title mb-4">Book Tickets</h3>
                     
