@@ -91,6 +91,20 @@ function getSortIcon($column, $currentSort, $currentOrder) {
 ?>
 
 <style>
+    /* Animated Background */
+    body {
+        background: linear-gradient(-45deg, #ee7752, #e73c7e, #23a6d5, #23d5ab);
+        background-size: 400% 400%;
+        animation: gradientShift 15s ease infinite;
+        min-height: 100vh;
+    }
+
+    @keyframes gradientShift {
+        0% { background-position: 0% 50%; }
+        50% { background-position: 100% 50%; }
+        100% { background-position: 0% 50%; }
+    }
+
     /* CSS Variables for consistent theming */
     :root {
         --primary-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
@@ -182,20 +196,47 @@ function getSortIcon($column, $currentSort, $currentOrder) {
     }
 
     .stat-card {
-        background: var(--glass-bg);
-        backdrop-filter: blur(10px);
-        border: 1px solid var(--glass-border);
+        background: rgba(255, 255, 255, 0.95);
+        backdrop-filter: blur(15px);
+        border: 1px solid rgba(255, 255, 255, 0.3);
         border-radius: 1rem;
         padding: 1.5rem;
         text-align: center;
         transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
         animation: fadeInUp 0.8s ease-out;
+        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
     }
 
     .stat-card:hover {
         transform: translateY(-10px) scale(1.02);
-        box-shadow: var(--shadow-heavy);
-        background: rgba(255, 255, 255, 0.4);
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+        background: rgba(255, 255, 255, 0.98);
+    }
+
+    .stat-number {
+        font-size: 2.5rem;
+        font-weight: 700;
+        color: #2c3e50;
+        text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        margin-bottom: 0.5rem;
+    }
+
+    .stat-label {
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        font-size: 0.8rem;
+        margin: 0;
+        font-weight: 600;
+        color: #2c3e50;
+        text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+    }
+
+    .stat-card i {
+        position: absolute;
+        right: 1rem;
+        top: 1rem;
+        opacity: 0.6 !important;
+        text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     }
 
     .stat-number {
@@ -226,11 +267,11 @@ function getSortIcon($column, $currentSort, $currentOrder) {
 
     /* Enhanced Table Container */
     .table-container {
-        background: var(--glass-bg);
-        backdrop-filter: blur(15px);
-        border: 1px solid var(--glass-border);
+        background: rgba(255, 255, 255, 0.95);
+        backdrop-filter: blur(20px);
+        border: 1px solid rgba(255, 255, 255, 0.3);
         border-radius: 1.5rem;
-        box-shadow: var(--shadow-light);
+        box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
         padding: 2rem;
         margin-top: 2rem;
         position: relative;

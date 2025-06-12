@@ -372,5 +372,3 @@ header("Permissions-Policy: geolocation=(), microphone=(), camera=()");
             }
         );
     </script>
-</body>
-</html> 

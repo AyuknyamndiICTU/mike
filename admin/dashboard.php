@@ -101,14 +101,14 @@ try {
         margin: 0;
         font-size: 2.5rem;
         font-weight: 700;
-        text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        color: white;
+        text-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
         animation: slideInFromLeft 1s ease-out;
-        background: linear-gradient(135deg, #fff 0%, #f0f8ff 50%, #e6f3ff 100%);
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
-        background-clip: text;
-        background-size: 200% 100%;
-        animation: gradientShift 4s ease-in-out infinite, slideInFromLeft 1s ease-out;
+    }
+
+    .page-header p {
+        color: rgba(255, 255, 255, 0.9);
+        text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
     }
 
     @keyframes slideInFromLeft {
@@ -130,9 +130,9 @@ try {
     }
 
     .stat-card {
-        background: var(--glass-bg);
-        backdrop-filter: blur(10px);
-        border: 1px solid var(--glass-border);
+        background: rgba(255, 255, 255, 0.95);
+        backdrop-filter: blur(15px);
+        border: 1px solid rgba(255, 255, 255, 0.3);
         border-radius: 1rem;
         padding: 1.5rem;
         text-align: center;
@@ -140,31 +140,32 @@ try {
         animation: fadeInUp 0.8s ease-out;
         overflow: hidden;
         position: relative;
+        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
     }
 
     .stat-card:hover {
         transform: translateY(-10px) scale(1.02);
-        box-shadow: var(--shadow-heavy);
-        background: rgba(255, 255, 255, 0.4);
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+        background: rgba(255, 255, 255, 0.98);
     }
 
     .stat-icon {
         font-size: 2.5rem;
-        opacity: 0.3;
+        opacity: 0.6;
         position: absolute;
         right: 1rem;
         top: 1rem;
+        color: #667eea;
+        text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     }
 
     .stat-value {
         font-size: 2.5rem;
         font-weight: 700;
-        background: var(--primary-gradient);
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
-        background-clip: text;
+        color: #2c3e50;
         animation: countUp 2s ease-out;
         margin-bottom: 0.5rem;
+        text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     }
 
     .stat-label {
@@ -173,7 +174,8 @@ try {
         font-size: 0.8rem;
         margin: 0;
         font-weight: 600;
-        color: #333;
+        color: #2c3e50;
+        text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
     }
 
     @keyframes countUp {
@@ -198,35 +200,35 @@ try {
     }
 
     .quick-action-btn {
-        background: var(--glass-bg);
-        backdrop-filter: blur(10px);
-        border: 1px solid var(--glass-border);
+        background: rgba(255, 255, 255, 0.95);
+        backdrop-filter: blur(15px);
+        border: 1px solid rgba(255, 255, 255, 0.3);
         border-radius: 1rem;
         padding: 1.5rem;
         text-align: center;
         transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
         text-decoration: none;
-        color: #333;
+        color: #2c3e50;
         display: block;
         position: relative;
         overflow: hidden;
+        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+        text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
     }
 
     .quick-action-btn:hover {
         transform: translateY(-10px) scale(1.02);
-        box-shadow: var(--shadow-heavy);
-        background: rgba(255, 255, 255, 0.4);
-        color: #333;
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+        background: rgba(255, 255, 255, 0.98);
+        color: #2c3e50;
         text-decoration: none;
     }
 
     .quick-action-icon {
         font-size: 2rem;
         margin-bottom: 0.5rem;
-        background: var(--primary-gradient);
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
-        background-clip: text;
+        color: #667eea;
+        text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     }
 
     /* Enhanced Action Buttons */
@@ -251,11 +253,11 @@ try {
 
     /* Enhanced Table Container */
     .table-container {
-        background: var(--glass-bg);
-        backdrop-filter: blur(15px);
-        border: 1px solid var(--glass-border);
+        background: rgba(255, 255, 255, 0.95);
+        backdrop-filter: blur(20px);
+        border: 1px solid rgba(255, 255, 255, 0.3);
         border-radius: 1.5rem;
-        box-shadow: var(--shadow-light);
+        box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
         padding: 2rem;
         margin-top: 2rem;
         position: relative;

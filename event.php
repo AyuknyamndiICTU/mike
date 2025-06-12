@@ -36,6 +36,20 @@ $page_title = htmlspecialchars($event['title']) . " - Event Booking System";
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
 <style>
+    /* Animated Background */
+    body {
+        background: linear-gradient(-45deg, #ee7752, #e73c7e, #23a6d5, #23d5ab);
+        background-size: 400% 400%;
+        animation: gradientShift 15s ease infinite;
+        min-height: 100vh;
+    }
+
+    @keyframes gradientShift {
+        0% { background-position: 0% 50%; }
+        50% { background-position: 100% 50%; }
+        100% { background-position: 0% 50%; }
+    }
+
     /* Page Header Styles */
     .page-header {
         background: linear-gradient(135deg, var(--primary-color), #224abe);
@@ -154,36 +168,64 @@ $page_title = htmlspecialchars($event['title']) . " - Event Booking System";
     <div class="row">
         <!-- Event Image and Basic Info -->
         <div class="col-md-8">
-            <img src="<?php echo htmlspecialchars($event['image_url']); ?>"
-                 alt="<?php echo htmlspecialchars($event['title']); ?>"
-                 class="img-fluid rounded event-image animate__animated animate__fadeIn">
-
-            <div class="event-details p-4 animate__animated animate__fadeInUp" style="animation-delay: 0.2s">
-                <h1><?php echo htmlspecialchars($event['title']); ?></h1>
-                
-                <div class="d-flex flex-wrap gap-4 text-muted mb-4">
-                    <div>
-                        <i class="bi bi-calendar"></i>
-                        <?php echo date('F d, Y', strtotime($event['event_date'])); ?>
-                    </div>
-                    <div>
-                        <i class="bi bi-clock"></i>
-                        <?php echo date('g:i A', strtotime($event['event_time'])); ?>
-                    </div>
-                    <div>
-                        <i class="bi bi-geo-alt"></i>
-                        <?php echo htmlspecialchars($event['venue']); ?>
-                    </div>
-                    <div>
-                        <i class="bi bi-tag"></i>
+            <!-- Enhanced Event Image -->
+            <div class="event-image-container mb-4 animate__animated animate__fadeIn">
+                <img src="<?php echo htmlspecialchars($event['image_url']); ?>"
+                     alt="<?php echo htmlspecialchars($event['title']); ?>"
+                     class="event-main-image">
+                <div class="image-overlay">
+                    <div class="event-category-badge">
+                        <i class="bi bi-tag-fill"></i>
                         <?php echo htmlspecialchars($event['category']); ?>
                     </div>
                 </div>
+            </div>
 
-                <h4>About This Event</h4>
-                <p class="lead"><?php echo nl2br(htmlspecialchars($event['description'])); ?></p>
+            <!-- Enhanced Event Details -->
+            <div class="event-details-card animate__animated animate__fadeInUp" style="animation-delay: 0.2s">
+                <div class="event-header">
+                    <h1 class="event-title"><?php echo htmlspecialchars($event['title']); ?></h1>
 
-                <div class="organizer-info card mb-4 animate__animated animate__fadeInLeft" style="animation-delay: 0.4s">
+                    <div class="event-meta-info">
+                        <div class="meta-item">
+                            <div class="meta-icon">
+                                <i class="bi bi-calendar-event"></i>
+                            </div>
+                            <div class="meta-content">
+                                <span class="meta-label">Date</span>
+                                <span class="meta-value"><?php echo date('F d, Y', strtotime($event['event_date'])); ?></span>
+                            </div>
+                        </div>
+
+                        <div class="meta-item">
+                            <div class="meta-icon">
+                                <i class="bi bi-clock-fill"></i>
+                            </div>
+                            <div class="meta-content">
+                                <span class="meta-label">Time</span>
+                                <span class="meta-value"><?php echo date('g:i A', strtotime($event['event_time'])); ?></span>
+                            </div>
+                        </div>
+
+                        <div class="meta-item">
+                            <div class="meta-icon">
+                                <i class="bi bi-geo-alt-fill"></i>
+                            </div>
+                            <div class="meta-content">
+                                <span class="meta-label">Venue</span>
+                                <span class="meta-value"><?php echo htmlspecialchars($event['venue']); ?></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="event-description">
+                    <h4 class="section-title">About This Event</h4>
+                    <p class="description-text"><?php echo nl2br(htmlspecialchars($event['description'])); ?></p>
+                </div>
+            </div>
+
+            <div class="organizer-info card mb-4 animate__animated animate__fadeInLeft" style="animation-delay: 0.4s">
                     <div class="card-header bg-primary text-white">
                         <h5 class="mb-0">
                             <i class="bi bi-person-badge me-2"></i>Event Organizer
@@ -429,30 +471,81 @@ document.querySelectorAll('.booking-form').forEach(form => {
 </script>
 
 <style>
-.event-details h1 {
+/* Enhanced Event Image Styling */
+.event-image-container {
+    position: relative;
+    border-radius: 20px;
+    overflow: hidden;
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.15);
+    background: linear-gradient(145deg, #f8f9fc, #ffffff);
+    padding: 8px;
+}
+
+.event-main-image {
+    width: 100%;
+    height: 450px;
+    object-fit: cover;
+    border-radius: 15px;
+    transition: transform 0.3s ease;
+}
+
+.event-main-image:hover {
+    transform: scale(1.02);
+}
+
+.image-overlay {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    z-index: 2;
+}
+
+.event-category-badge {
+    background: linear-gradient(135deg, var(--primary-color), var(--accent-color));
+    color: white;
+    padding: 8px 16px;
+    border-radius: 25px;
+    font-weight: 600;
+    font-size: 0.9rem;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    backdrop-filter: blur(10px);
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+/* Enhanced Event Details Card */
+.event-details-card {
+    background: linear-gradient(145deg, #ffffff, #f8fafc);
+    border-radius: 20px;
+    padding: 30px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    position: relative;
+    overflow: hidden;
+}
+
+.event-details-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: linear-gradient(90deg, var(--primary-color), var(--accent-color), var(--success-color));
+}
+
+.event-title {
     background: linear-gradient(135deg, var(--success-color) 0%, var(--accent-color) 50%, var(--primary-color) 100%);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
     background-size: 200% 100%;
     animation: gradientShift 4s ease-in-out infinite;
-    position: relative;
-    display: inline-block;
-    overflow: hidden;
     font-weight: 700;
-}
-
-.event-details h1::before {
-    content: '';
-    position: absolute;
-    top: -50%;
-    right: -50%;
-    width: 100%;
-    height: 200%;
-    background: linear-gradient(45deg, transparent, rgba(255,255,255,0.15), transparent);
-    transform: rotate(45deg);
-    animation: headerShine 4s infinite;
-    pointer-events: none;
+    font-size: 2.5rem;
+    margin-bottom: 25px;
+    line-height: 1.2;
 }
 
 @keyframes gradientShift {
@@ -460,9 +553,104 @@ document.querySelectorAll('.booking-form').forEach(form => {
     50% { background-position: 100% 50%; }
 }
 
-@keyframes headerShine {
-    0% { transform: translateX(-100%) rotate(45deg); }
-    100% { transform: translateX(100%) rotate(45deg); }
+/* Enhanced Meta Information */
+.event-meta-info {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 20px;
+    margin-bottom: 30px;
+    padding: 20px;
+    background: linear-gradient(135deg, rgba(var(--primary-color-rgb), 0.05), rgba(var(--accent-color-rgb), 0.05));
+    border-radius: 15px;
+    border: 1px solid rgba(var(--primary-color-rgb), 0.1);
+}
+
+.meta-item {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    padding: 15px;
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+    transition: all 0.3s ease;
+    border-left: 4px solid var(--primary-color);
+}
+
+.meta-item:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+}
+
+.meta-icon {
+    width: 50px;
+    height: 50px;
+    background: linear-gradient(135deg, var(--primary-color), var(--accent-color));
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 1.3rem;
+    flex-shrink: 0;
+    box-shadow: 0 4px 12px rgba(var(--primary-color-rgb), 0.3);
+}
+
+.meta-content {
+    flex: 1;
+}
+
+.meta-label {
+    display: block;
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: #666;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 4px;
+}
+
+.meta-value {
+    display: block;
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: #333;
+    line-height: 1.3;
+}
+
+/* Enhanced Description Section */
+.event-description {
+    margin-top: 30px;
+}
+
+.section-title {
+    color: #333;
+    font-weight: 700;
+    font-size: 1.5rem;
+    margin-bottom: 20px;
+    position: relative;
+    padding-bottom: 10px;
+}
+
+.section-title::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 60px;
+    height: 3px;
+    background: linear-gradient(90deg, var(--primary-color), var(--accent-color));
+    border-radius: 2px;
+}
+
+.description-text {
+    font-size: 1.1rem;
+    line-height: 1.8;
+    color: #555;
+    background: rgba(var(--primary-color-rgb), 0.02);
+    padding: 20px;
+    border-radius: 12px;
+    border-left: 4px solid var(--accent-color);
 }
 
 .organizer-info {
@@ -609,8 +797,46 @@ document.querySelectorAll('.booking-form').forEach(form => {
     border-radius: 10px;
 }
 
-/* Responsive improvements for organizer and venue sections */
+/* Enhanced Responsive Design */
 @media (max-width: 768px) {
+    .event-main-image {
+        height: 300px;
+    }
+
+    .event-title {
+        font-size: 2rem;
+    }
+
+    .event-meta-info {
+        grid-template-columns: 1fr;
+        gap: 15px;
+        padding: 15px;
+    }
+
+    .meta-item {
+        padding: 12px;
+        gap: 12px;
+    }
+
+    .meta-icon {
+        width: 45px;
+        height: 45px;
+        font-size: 1.1rem;
+    }
+
+    .meta-value {
+        font-size: 1rem;
+    }
+
+    .event-details-card {
+        padding: 20px;
+    }
+
+    .description-text {
+        font-size: 1rem;
+        padding: 15px;
+    }
+
     .organizer-detail-item,
     .venue-detail-item {
         padding: 0.8rem;
@@ -633,6 +859,27 @@ document.querySelectorAll('.booking-form').forEach(form => {
 
     #map {
         height: 250px;
+    }
+}
+
+@media (max-width: 480px) {
+    .event-main-image {
+        height: 250px;
+    }
+
+    .event-title {
+        font-size: 1.8rem;
+    }
+
+    .event-category-badge {
+        font-size: 0.8rem;
+        padding: 6px 12px;
+    }
+
+    .meta-icon {
+        width: 40px;
+        height: 40px;
+        font-size: 1rem;
     }
 }
 

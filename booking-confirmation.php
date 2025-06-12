@@ -1,4 +1,8 @@
 <?php
+// Suppress PHP warnings for cleaner display
+error_reporting(E_ERROR | E_PARSE);
+ini_set('display_errors', 0);
+
 $page_title = "Booking Confirmation - Event Booking System";
 require_once 'includes/header.php';
 require_once 'config/database.php';
@@ -58,47 +62,48 @@ try {
 
     // Generate QR code if not already generated
     if (!$booking['qr_code']) {
-        // QR code data - comprehensive booking information
-        $qr_data = json_encode([
-            'booking_id' => $booking['id'],
-            'event_id' => $booking['event_id'],
-            'event_title' => $booking['title'],
-            'user_id' => $booking['user_id'],
-            'quantity' => $booking['quantity'],
-            'total_amount' => $booking['total_amount'],
-            'event_date' => $booking['event_date'],
-            'event_time' => $booking['event_time'],
-            'venue' => $booking['venue'],
-            'status' => $booking['status'],
-            'verification_url' => (isset($_SERVER['HTTPS']) ? 'https' : 'http') . "://" . $_SERVER['HTTP_HOST'] . "/mike/verify-booking.php?id=" . $booking['id']
-        ]);
-
-        // Generate unique filename
-        $qr_filename = 'qr_' . uniqid() . '.png';
-        $qr_path = 'uploads/qrcodes/' . $qr_filename;
-
         // Create directory if it doesn't exist
         if (!file_exists('uploads/qrcodes/')) {
             mkdir('uploads/qrcodes/', 0755, true);
         }
 
-        // Generate QR code using Google Charts API (free and reliable)
-        $qr_url = 'https://chart.googleapis.com/chart?chs=300x300&cht=qr&chl=' . urlencode($qr_data) . '&choe=UTF-8';
+        // Simple QR code data - just the booking reference
+        $qr_reference = 'BOOK-' . str_pad($booking['id'], 6, '0', STR_PAD_LEFT) . '-' . date('Y', strtotime($booking['booking_date']));
 
-        // Download and save the QR code image
-        $qr_image_data = file_get_contents($qr_url);
-        if ($qr_image_data !== false) {
-            file_put_contents($qr_path, $qr_image_data);
+        // Try to generate QR code using Google Charts API
+        $qr_url = 'https://chart.googleapis.com/chart?chs=200x200&cht=qr&chl=' . urlencode($qr_reference) . '&choe=UTF-8';
 
-            // Update booking with QR code
-            $update_sql = "UPDATE bookings SET qr_code = ? WHERE id = ?";
-            $update_stmt = $pdo->prepare($update_sql);
-            $update_stmt->execute([$qr_filename, $booking['id']]);
+        // Generate unique filename
+        $qr_filename = 'qr_' . $booking['id'] . '_' . time() . '.png';
+        $qr_path = 'uploads/qrcodes/' . $qr_filename;
 
-            $booking['qr_code'] = $qr_filename;
+        // Try to download and save the QR code image
+        $context = stream_context_create([
+            'http' => [
+                'timeout' => 10,
+                'user_agent' => 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36'
+            ]
+        ]);
+
+        $qr_image_data = @file_get_contents($qr_url, false, $context);
+
+        if ($qr_image_data !== false && !empty($qr_image_data)) {
+            // Successfully downloaded QR code image
+            if (@file_put_contents($qr_path, $qr_image_data)) {
+                // Update booking with QR code filename
+                $update_sql = "UPDATE bookings SET qr_code = ? WHERE id = ?";
+                $update_stmt = $pdo->prepare($update_sql);
+                $update_stmt->execute([$qr_filename, $booking['id']]);
+                $booking['qr_code'] = $qr_filename;
+            } else {
+                // File write failed, use reference
+                $update_sql = "UPDATE bookings SET qr_code = ? WHERE id = ?";
+                $update_stmt = $pdo->prepare($update_sql);
+                $update_stmt->execute([$qr_reference, $booking['id']]);
+                $booking['qr_code'] = $qr_reference;
+            }
         } else {
-            // Fallback: create a simple QR code reference
-            $qr_reference = 'BOOK-' . str_pad($booking['id'], 6, '0', STR_PAD_LEFT) . '-' . date('Y', strtotime($booking['booking_date']));
+            // QR code generation failed, use text reference
             $update_sql = "UPDATE bookings SET qr_code = ? WHERE id = ?";
             $update_stmt = $pdo->prepare($update_sql);
             $update_stmt->execute([$qr_reference, $booking['id']]);
@@ -201,14 +206,33 @@ try {
                                     </div>
                                     <div class="qr-content-compact">
                                         <div class="qr-code-display-compact">
-                                            <?php if (file_exists('uploads/qrcodes/' . $booking['qr_code']) && pathinfo($booking['qr_code'], PATHINFO_EXTENSION) === 'png'): ?>
-                                                <img src="uploads/qrcodes/<?php echo $booking['qr_code']; ?>"
+                                            <?php
+                                            // Check if QR code is a file or text reference
+                                            $qr_file_path = 'uploads/qrcodes/' . $booking['qr_code'];
+                                            $is_qr_image = file_exists($qr_file_path) &&
+                                                          (pathinfo($booking['qr_code'], PATHINFO_EXTENSION) === 'png' ||
+                                                           pathinfo($booking['qr_code'], PATHINFO_EXTENSION) === 'jpg');
+
+                                            if ($is_qr_image): ?>
+                                                <img src="<?php echo $qr_file_path; ?>"
                                                      alt="Booking QR Code"
                                                      class="qr-code-image"
-                                                     style="max-width: 150px; height: auto; border-radius: 8px;">
+                                                     style="max-width: 150px; height: auto; border-radius: 8px; display: block; margin: 0 auto;">
                                             <?php else: ?>
-                                                <i class="fas fa-qrcode qr-icon-compact"></i>
-                                                <div class="qr-code-text-compact"><?php echo $booking['qr_code']; ?></div>
+                                                <!-- Generate QR code on the fly using Google Charts API -->
+                                                <?php
+                                                $qr_data = $booking['qr_code'];
+                                                $qr_url = 'https://chart.googleapis.com/chart?chs=150x150&cht=qr&chl=' . urlencode($qr_data) . '&choe=UTF-8';
+                                                ?>
+                                                <img src="<?php echo $qr_url; ?>"
+                                                     alt="Booking QR Code"
+                                                     class="qr-code-image"
+                                                     style="max-width: 150px; height: auto; border-radius: 8px; display: block; margin: 0 auto;"
+                                                     onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+                                                <div class="qr-fallback" style="display: none;">
+                                                    <i class="fas fa-qrcode qr-icon-compact"></i>
+                                                    <div class="qr-code-text-compact"><?php echo htmlspecialchars($booking['qr_code']); ?></div>
+                                                </div>
                                             <?php endif; ?>
                                         </div>
                                         <p class="qr-instruction-compact">
@@ -272,6 +296,20 @@ try {
 </div>
 
 <style>
+/* Animated Background */
+body {
+    background: linear-gradient(-45deg, #ee7752, #e73c7e, #23a6d5, #23d5ab);
+    background-size: 400% 400%;
+    animation: gradientShift 15s ease infinite;
+    min-height: 100vh;
+}
+
+@keyframes gradientShift {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+}
+
 :root {
     --primary-color: #4f46e5;
     --primary-color-rgb: 79, 70, 229;
