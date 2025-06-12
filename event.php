@@ -324,11 +324,16 @@ $page_title = htmlspecialchars($event['title']) . " - Event Booking System";
             </div>
         </div>
 
-        <!-- Booking Section -->
+        <!-- Enhanced Booking Section -->
         <div class="col-md-4">
-            <div class="card sticky-top animate__animated animate__fadeInUp" style="top: 20px; animation-delay: 0.8s">
-                <div class="card-body">
-                    <h3 class="card-title mb-4">Book Tickets</h3>
+            <div class="booking-card sticky-top animate__animated animate__fadeInUp" style="top: 20px; animation-delay: 0.8s">
+                <div class="booking-header">
+                    <h3 class="booking-title">
+                        <i class="bi bi-ticket-perforated me-2"></i>
+                        Book Tickets
+                    </h3>
+                </div>
+                <div class="booking-body">
                     
                     <?php if ($event['ticket_types']): ?>
                         <?php
@@ -344,54 +349,85 @@ $page_title = htmlspecialchars($event['title']) . " - Event Booking System";
                         ?>
                         
                         <?php foreach ($ticket_types as $type): ?>
-                            <div class="ticket-type-card mb-3">
-                                <h5 class="ticket-type-name"><?php echo htmlspecialchars($type['name']); ?></h5>
-                                <div class="ticket-price mb-2">
-                                    <h4 class="text-primary"><?php echo number_format($type['price'], 0); ?> FCFA</h4>
+                            <div class="enhanced-ticket-card">
+                                <div class="ticket-header">
+                                    <h5 class="ticket-name"><?php echo htmlspecialchars($type['name']); ?></h5>
+                                    <div class="ticket-price">
+                                        <span class="price-amount"><?php echo number_format($type['price'], 0); ?></span>
+                                        <span class="price-currency">FCFA</span>
+                                    </div>
                                 </div>
-                                <?php if ($type['description']): ?>
-                                    <p class="ticket-description text-muted small mb-2">
-                                        <?php echo htmlspecialchars($type['description']); ?>
-                                    </p>
-                                <?php endif; ?>
-                                
-                                <?php if ($type['available_seats'] > 0): ?>
-                                    <p class="mb-2">
-                                        <i class="bi bi-check-circle-fill text-success"></i>
-                                        <?php echo $type['available_seats']; ?> tickets available
-                                    </p>
-                                    
-                                    <?php if (isLoggedIn()): ?>
-                                        <form class="booking-form" action="api/add-to-cart.php" method="POST">
-                                            <input type="hidden" name="event_id" value="<?php echo $event['id']; ?>">
-                                            <input type="hidden" name="ticket_type" value="<?php echo htmlspecialchars($type['name']); ?>">
-                                            
-                                            <div class="d-flex align-items-center gap-2 mb-3">
-                                                <label class="form-label mb-0">Quantity:</label>
-                                                <input type="number" class="form-control form-control-sm quantity-input" 
-                                                       name="quantity" min="1" max="<?php echo $type['available_seats']; ?>" 
-                                                       value="1" style="width: 80px;">
-                                            </div>
 
-                                            <button type="submit" class="btn btn-primary btn-sm w-100">
-                                                Add to Cart
-                                            </button>
-                                        </form>
-                                    <?php endif; ?>
-                                <?php else: ?>
-                                    <div class="alert alert-danger py-2">Sold Out!</div>
+                                <?php if ($type['description']): ?>
+                                    <div class="ticket-description">
+                                        <i class="bi bi-info-circle me-1"></i>
+                                        <?php echo htmlspecialchars($type['description']); ?>
+                                    </div>
                                 <?php endif; ?>
+
+                                <div class="ticket-availability">
+                                    <?php if ($type['available_seats'] > 0): ?>
+                                        <div class="availability-status available">
+                                            <i class="bi bi-check-circle-fill"></i>
+                                            <span><?php echo $type['available_seats']; ?> tickets available</span>
+                                        </div>
+
+                                        <?php if (isLoggedIn()): ?>
+                                            <form class="enhanced-booking-form" action="api/add-to-cart.php" method="POST">
+                                                <input type="hidden" name="event_id" value="<?php echo $event['id']; ?>">
+                                                <input type="hidden" name="ticket_type" value="<?php echo htmlspecialchars($type['name']); ?>">
+
+                                                <div class="quantity-selector">
+                                                    <label class="quantity-label">Quantity:</label>
+                                                    <div class="quantity-controls">
+                                                        <button type="button" class="quantity-btn minus" onclick="decreaseQuantity(this)">
+                                                            <i class="bi bi-dash"></i>
+                                                        </button>
+                                                        <input type="number" class="quantity-input"
+                                                               name="quantity" min="1" max="<?php echo $type['available_seats']; ?>"
+                                                               value="1" readonly>
+                                                        <button type="button" class="quantity-btn plus" onclick="increaseQuantity(this)">
+                                                            <i class="bi bi-plus"></i>
+                                                        </button>
+                                                    </div>
+                                                </div>
+
+                                                <button type="submit" class="add-to-cart-btn">
+                                                    <i class="bi bi-cart-plus me-2"></i>
+                                                    Add to Cart
+                                                </button>
+                                            </form>
+                                        <?php endif; ?>
+                                    <?php else: ?>
+                                        <div class="availability-status sold-out">
+                                            <i class="bi bi-x-circle-fill"></i>
+                                            <span>Sold Out!</span>
+                                        </div>
+                                    <?php endif; ?>
+                                </div>
                             </div>
                         <?php endforeach; ?>
 
                         <?php if (!isLoggedIn()): ?>
-                            <div class="alert alert-info">
-                                Please <a href="login.php">login</a> to book tickets.
+                            <div class="login-prompt">
+                                <div class="login-icon">
+                                    <i class="bi bi-person-lock"></i>
+                                </div>
+                                <div class="login-text">
+                                    <h6>Login Required</h6>
+                                    <p>Please <a href="login.php" class="login-link">login</a> to book tickets.</p>
+                                </div>
                             </div>
                         <?php endif; ?>
                     <?php else: ?>
-                        <div class="alert alert-warning">
-                            No ticket types available for this event.
+                        <div class="no-tickets-message">
+                            <div class="no-tickets-icon">
+                                <i class="bi bi-exclamation-triangle"></i>
+                            </div>
+                            <div class="no-tickets-text">
+                                <h6>No Tickets Available</h6>
+                                <p>No ticket types available for this event.</p>
+                            </div>
                         </div>
                     <?php endif; ?>
                 </div>
@@ -409,7 +445,26 @@ document.addEventListener('DOMContentLoaded', function() {
     initMap(lat, lng, venue);
 });
 
-document.querySelectorAll('.booking-form').forEach(form => {
+// Quantity control functions
+function increaseQuantity(button) {
+    const input = button.parentElement.querySelector('.quantity-input');
+    const max = parseInt(input.getAttribute('max'));
+    const current = parseInt(input.value);
+    if (current < max) {
+        input.value = current + 1;
+    }
+}
+
+function decreaseQuantity(button) {
+    const input = button.parentElement.querySelector('.quantity-input');
+    const min = parseInt(input.getAttribute('min'));
+    const current = parseInt(input.value);
+    if (current > min) {
+        input.value = current - 1;
+    }
+}
+
+document.querySelectorAll('.enhanced-booking-form, .booking-form').forEach(form => {
     form.addEventListener('submit', async function(e) {
         e.preventDefault();
         const button = this.querySelector('button[type="submit"]');
@@ -883,6 +938,149 @@ document.querySelectorAll('.booking-form').forEach(form => {
     }
 }
 
+/* Enhanced Booking Section Styling */
+.booking-card {
+    background: linear-gradient(145deg, #ffffff, #f8fafc);
+    border: none;
+    border-radius: 20px;
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+    position: relative;
+}
+
+.booking-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: linear-gradient(90deg, var(--primary-color), var(--accent-color), var(--success-color));
+}
+
+.booking-header {
+    background: linear-gradient(135deg, var(--primary-color), var(--accent-color));
+    color: white;
+    padding: 20px 25px;
+    margin: 0;
+}
+
+.booking-title {
+    margin: 0;
+    font-size: 1.4rem;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+}
+
+.booking-body {
+    padding: 25px;
+}
+
+/* Enhanced Ticket Cards */
+.enhanced-ticket-card {
+    background: linear-gradient(145deg, #ffffff, #f8fafc);
+    border: 1px solid rgba(var(--primary-color-rgb), 0.1);
+    border-radius: 15px;
+    padding: 20px;
+    margin-bottom: 20px;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.enhanced-ticket-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 4px;
+    height: 100%;
+    background: linear-gradient(180deg, var(--primary-color), var(--accent-color));
+}
+
+.enhanced-ticket-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.15);
+}
+
+.ticket-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 15px;
+}
+
+.ticket-name {
+    color: #333;
+    font-weight: 700;
+    font-size: 1.2rem;
+    margin: 0;
+    flex: 1;
+}
+
+.ticket-price {
+    text-align: right;
+    margin-left: 15px;
+}
+
+.price-amount {
+    display: block;
+    font-size: 1.8rem;
+    font-weight: 800;
+    color: var(--primary-color);
+    line-height: 1;
+}
+
+.price-currency {
+    display: block;
+    font-size: 0.9rem;
+    color: #666;
+    font-weight: 600;
+    margin-top: 2px;
+}
+
+.ticket-description {
+    background: rgba(var(--accent-color-rgb), 0.05);
+    border-left: 3px solid var(--accent-color);
+    padding: 10px 15px;
+    border-radius: 8px;
+    margin-bottom: 15px;
+    font-size: 0.9rem;
+    color: #666;
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+}
+
+.ticket-availability {
+    margin-top: 15px;
+}
+
+.availability-status {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 15px;
+    padding: 8px 12px;
+    border-radius: 8px;
+    font-weight: 600;
+    font-size: 0.9rem;
+}
+
+.availability-status.available {
+    background: rgba(var(--success-color-rgb), 0.1);
+    color: var(--success-color);
+    border: 1px solid rgba(var(--success-color-rgb), 0.2);
+}
+
+.availability-status.sold-out {
+    background: rgba(220, 53, 69, 0.1);
+    color: #dc3545;
+    border: 1px solid rgba(220, 53, 69, 0.2);
+}
+
 .ticket-type-card {
     background: #f8f9fa;
     border-radius: 8px;
@@ -893,6 +1091,177 @@ document.querySelectorAll('.booking-form').forEach(form => {
 .ticket-type-name {
     color: #333;
     margin-bottom: 10px;
+}
+
+/* Quantity Selector Styling */
+.quantity-selector {
+    margin-bottom: 15px;
+}
+
+.quantity-label {
+    display: block;
+    font-weight: 600;
+    color: #333;
+    margin-bottom: 8px;
+    font-size: 0.9rem;
+}
+
+.quantity-controls {
+    display: flex;
+    align-items: center;
+    background: #f8f9fc;
+    border-radius: 10px;
+    padding: 5px;
+    border: 2px solid rgba(var(--primary-color-rgb), 0.1);
+    max-width: 140px;
+}
+
+.quantity-btn {
+    background: var(--primary-color);
+    color: white;
+    border: none;
+    width: 35px;
+    height: 35px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-size: 1rem;
+}
+
+.quantity-btn:hover {
+    background: var(--accent-color);
+    transform: scale(1.05);
+}
+
+.quantity-input {
+    border: none;
+    background: transparent;
+    text-align: center;
+    font-weight: 700;
+    font-size: 1.1rem;
+    color: #333;
+    width: 50px;
+    margin: 0 5px;
+}
+
+.quantity-input:focus {
+    outline: none;
+}
+
+/* Add to Cart Button */
+.add-to-cart-btn {
+    background: linear-gradient(135deg, var(--success-color), #17a673);
+    color: white;
+    border: none;
+    padding: 12px 20px;
+    border-radius: 10px;
+    font-weight: 700;
+    font-size: 1rem;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 12px rgba(var(--success-color-rgb), 0.3);
+}
+
+.add-to-cart-btn:hover {
+    background: linear-gradient(135deg, #17a673, var(--success-color));
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(var(--success-color-rgb), 0.4);
+}
+
+.add-to-cart-btn:active {
+    transform: translateY(0);
+}
+
+/* Login Prompt Styling */
+.login-prompt {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    background: rgba(var(--primary-color-rgb), 0.05);
+    border: 1px solid rgba(var(--primary-color-rgb), 0.1);
+    border-radius: 12px;
+    padding: 20px;
+    margin-top: 20px;
+}
+
+.login-icon {
+    width: 50px;
+    height: 50px;
+    background: var(--primary-color);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 1.3rem;
+    flex-shrink: 0;
+}
+
+.login-text h6 {
+    margin: 0 0 5px 0;
+    color: #333;
+    font-weight: 700;
+}
+
+.login-text p {
+    margin: 0;
+    color: #666;
+    font-size: 0.9rem;
+}
+
+.login-link {
+    color: var(--primary-color);
+    text-decoration: none;
+    font-weight: 600;
+}
+
+.login-link:hover {
+    color: var(--accent-color);
+    text-decoration: underline;
+}
+
+/* No Tickets Message */
+.no-tickets-message {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    background: rgba(255, 193, 7, 0.1);
+    border: 1px solid rgba(255, 193, 7, 0.2);
+    border-radius: 12px;
+    padding: 20px;
+    margin-top: 20px;
+}
+
+.no-tickets-icon {
+    width: 50px;
+    height: 50px;
+    background: #ffc107;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 1.3rem;
+    flex-shrink: 0;
+}
+
+.no-tickets-text h6 {
+    margin: 0 0 5px 0;
+    color: #333;
+    font-weight: 700;
+}
+
+.no-tickets-text p {
+    margin: 0;
+    color: #666;
+    font-size: 0.9rem;
 }
 
 .ticket-price {
