@@ -335,10 +335,11 @@ body {
     background: linear-gradient(145deg, var(--card-bg), var(--light-color));
     border-radius: var(--border-radius-lg);
     box-shadow: var(--shadow-xl);
-    overflow: hidden;
+    /* Remove or comment out the following lines: */
+    /* overflow: hidden; */
+    /* max-height: 100vh; */
     position: relative;
     animation: slideInUp 0.8s ease-out;
-    max-height: 100vh;
 }
 
 .confirmation-card::before {
