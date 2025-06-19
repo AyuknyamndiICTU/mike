@@ -83,7 +83,7 @@ event-booking/
 
 ## Contributors
 
-- [Your Name]
+- [Ayukeyong Dohbila Nyamndi]
 
 ## License
 
